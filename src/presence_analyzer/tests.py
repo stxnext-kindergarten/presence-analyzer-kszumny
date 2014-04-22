@@ -53,6 +53,88 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(len(data), 2)
         self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
 
+    def test_mean_time_weekday_view(self):
+        """
+        Test for view which returns mean presence time of given user grouped
+        by weekday.
+        """
+        resp = self.client.get('/api/v1/mean_time_weekday/10')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 7)
+        self.assertListEqual(
+            data,
+            [
+                [u'Mon', 0],
+                [u'Tue', 30047.0],
+                [u'Wed', 24465.0],
+                [u'Thu', 23705.0],
+                [u'Fri', 0],
+                [u'Sat', 0],
+                [u'Sun', 0]
+            ]
+        )
+
+        resp = self.client.get('/api/v1/mean_time_weekday/11')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 7)
+        self.assertListEqual(
+            data,
+            [
+                [u'Mon', 24123.0],
+                [u'Tue', 16564.0],
+                [u'Wed', 25321.0],
+                [u'Thu', 22984.0],
+                [u'Fri', 6426.0],
+                [u'Sat', 0],
+                [u'Sun', 0]
+            ]
+        )
+
+    def test_presence_weekday_view(self):
+        """
+        Testing for view which returns total presence time of given user
+        grouped by weekday.
+        """
+        resp = self.client.get('/api/v1/presence_weekday/10')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 8)
+        self.assertListEqual(
+            data,
+            [
+                [u'Weekday', u'Presence (s)'],
+                [u'Mon', 0],
+                [u'Tue', 30047],
+                [u'Wed', 24465],
+                [u'Thu', 23705],
+                [u'Fri', 0],
+                [u'Sat', 0],
+                [u'Sun', 0],
+            ]
+        )
+
+        resp = self.client.get('/api/v1/presence_weekday/11')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 8)
+        self.assertListEqual(
+            data,
+            [
+                [u'Weekday', u'Presence (s)'],
+                [u'Mon', 24123],
+                [u'Tue', 16564],
+                [u'Wed', 25321],
+                [u'Thu', 45968],
+                [u'Fri', 6426],
+                [u'Sat', 0],
+                [u'Sun', 0],
+            ]
+        )
+
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """
