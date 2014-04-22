@@ -202,7 +202,13 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         """
         self.assertEqual(
             utils.seconds_since_midnight(datetime.time(13, 37, 0)),
-            13*60*60 + 37*60)
+            13*60*60 + 37*60
+        )
+
+        self.assertEqual(
+            utils.seconds_since_midnight(datetime.time(0, 0, 0)),
+            0
+        )
 
     def test_interval(self):
         """
@@ -214,13 +220,18 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         )
 
         self.assertEquals(
-            utils.interval(datetime.time(0, 0, 0), datetime.time(12, 00, 0)),
+            utils.interval(datetime.time(0, 0, 0), datetime.time(12, 0, 0)),
             12*60*60
         )
 
         self.assertEquals(
-            utils.interval(datetime.time(9, 0, 0), datetime.time(17, 00, 0)),
+            utils.interval(datetime.time(9, 0, 0), datetime.time(17, 0, 0)),
             8*60*60
+        )
+
+        self.assertEquals(
+            utils.interval(datetime.time(0, 0, 0), datetime.time(0, 0, 0)),
+            0
         )
 
     def test_mean(self):
