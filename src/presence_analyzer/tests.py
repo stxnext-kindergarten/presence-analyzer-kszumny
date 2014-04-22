@@ -84,6 +84,72 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertEqual(data[10][sample_date]['start'],
                          datetime.time(9, 39, 5))
 
+    def test_group_by_weekday(self):
+        """
+        Test of group_by_weekday
+        """
+        self.assertDictEqual(
+            utils.group_by_weekday(utils.get_data()[10]),
+            {
+                0: [],
+                1: [30047],
+                2: [24465],
+                3: [23705],
+                4: [],
+                5: [],
+                6: []
+            }
+        )
+
+        self.assertDictEqual(
+            utils.group_by_weekday(utils.get_data()[11]),
+            {
+                0: [24123],
+                1: [16564],
+                2: [25321],
+                3: [22969, 22999],
+                4: [6426],
+                5: [],
+                6: []
+            }
+        )
+
+    def test_seconds_since_midnight(self):
+        """
+        Test of seconds_since_midnight.
+        """
+        self.assertEqual(
+            utils.seconds_since_midnight(datetime.time(13, 37, 0)),
+            13*60*60 + 37*60)
+
+    def test_interval(self):
+        """
+        Test of interval
+        """
+        self.assertEquals(
+            utils.interval(datetime.time(0, 0, 0), datetime.time(0, 30, 0)),
+            30*60
+        )
+
+        self.assertEquals(
+            utils.interval(datetime.time(0, 0, 0), datetime.time(12, 00, 0)),
+            12*60*60
+        )
+
+        self.assertEquals(
+            utils.interval(datetime.time(9, 0, 0), datetime.time(17, 00, 0)),
+            8*60*60
+        )
+
+    def test_mean(self):
+        """
+        Test of utils.mean
+        """
+
+        self.assertEquals(utils.mean([5, 8, 7, 5, 7, 7]), 6.5)
+        self.assertEquals(utils.mean([]), 0)
+        self.assertEquals(utils.mean([8, 8, 8, -8, -16, 0]), 0)
+
 
 def suite():
     """
