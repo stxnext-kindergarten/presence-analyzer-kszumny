@@ -135,6 +135,47 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
             ]
         )
 
+    def test_presence_weekday_start_end_view(self):
+        """
+        Testing for view which returns total presence time of given user
+        grouped by weekday.
+        """
+        resp = self.client.get('/api/v1/presence_weekday_start_end/10')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 7)
+        self.assertListEqual(
+            data,
+            [
+                [u'Mon', 0, 0],
+                [u'Tue', 34745.0, 64792.0],
+                [u'Wed', 33592.0, 58057.0],
+                [u'Thu', 38926.0, 62631.0],
+                [u'Fri', 0, 0],
+                [u'Sat', 0, 0],
+                [u'Sun', 0, 0]
+            ]
+        )
+
+        resp = self.client.get('/api/v1/presence_weekday_start_end/11')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 7)
+        self.assertListEqual(
+            data,
+            [
+                [u'Mon', 33134.0, 57257.0],
+                [u'Tue', 33590.0, 50154.0],
+                [u'Wed', 33206.0, 58527.0],
+                [u'Thu', 35602.0, 58586.0],
+                [u'Fri', 47816.0, 54242.0],
+                [u'Sat', 0, 0],
+                [u'Sun', 0, 0]
+            ]
+        )
+
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """
@@ -193,6 +234,37 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
                 4: [6426],
                 5: [],
                 6: []
+            }
+        )
+
+    def test_group_by_weekday_start_end(self):
+        """
+        Test of group_by_weekday_start_end
+        """
+
+        self.assertDictEqual(
+            utils.group_by_weekday_start_end(utils.get_data()[10]),
+            {
+                0: {'start': [], 'end': []},
+                1: {'start': [34745], 'end': [64792]},
+                2: {'start': [33592], 'end': [58057]},
+                3: {'start': [38926], 'end': [62631]},
+                4: {'start': [], 'end': []},
+                5: {'start': [], 'end': []},
+                6: {'start': [], 'end': []}
+            }
+        )
+
+        self.assertDictEqual(
+            utils.group_by_weekday_start_end(utils.get_data()[11]),
+            {
+                0: {'start': [33134], 'end': [57257]},
+                1: {'start': [33590], 'end': [50154]},
+                2: {'start': [33206], 'end': [58527]},
+                3: {'start': [37116, 34088], 'end': [60085, 57087]},
+                4: {'start': [47816], 'end': [54242]},
+                5: {'start': [], 'end': []},
+                6: {'start': [], 'end': []}
             }
         )
 
